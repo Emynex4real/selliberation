@@ -80,11 +80,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card-hover {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 .card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(30, 27, 75, 0.12);
+  transform: translateY(-5px);
+  box-shadow: 0 24px 48px rgba(30, 27, 75, 0.10);
 }
 
 .earning-bar {
