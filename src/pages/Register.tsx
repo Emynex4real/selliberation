@@ -15,10 +15,11 @@ export default function Register() {
   // const { register } = useAuth(); // Assuming Context
   const navigate = useNavigate();
 
-  // Color system references
+  // Updated Logo Color system
   const colors = {
-    primary: '#1E1B4B',
-    accent: '#10B981',
+    blue: '#0F2942',
+    green: '#1CB957',
+    orange: '#FF7A00',
     bg: '#F9FAFB'
   };
 
@@ -32,25 +33,25 @@ export default function Register() {
     <div className="min-h-screen flex font-sans" style={{ backgroundColor: colors.bg }}>
       
       {/* Left Side - Value Proposition (Hidden on Mobile) */}
-      <div className="hidden lg:flex lg:w-5/12 bg-[#1E1B4B] flex-col justify-between p-12 relative overflow-hidden">
-        {/* Decorative Background Elements */}
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#10B981]/10 rounded-full blur-[80px] pointer-events-none"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[300px] h-[300px] bg-[#F59E0B]/10 rounded-full blur-[80px] pointer-events-none"></div>
+      <div className="hidden lg:flex lg:w-5/12 flex-col justify-between p-12 relative overflow-hidden" style={{ backgroundColor: colors.blue }}>
+        {/* Decorative Background Elements mapped to new brand colors */}
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#1CB957]/10 rounded-full blur-[80px] pointer-events-none"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[300px] h-[300px] bg-[#FF7A00]/15 rounded-full blur-[80px] pointer-events-none"></div>
 
         <div className="relative z-10">
           <Link to="/" className="text-3xl font-extrabold tracking-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            <span className="text-white">Sell</span><span style={{ color: colors.accent }}>iberation</span>
+            <span className="text-white">Sell</span><span style={{ color: colors.orange }}>iberation</span>
           </Link>
           
           <div className="mt-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-6 border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-bold text-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-6 border border-[#FF7A00]/30 bg-[#FF7A00]/10 text-[#FF7A00] font-bold text-sm tracking-wide">
               7-DAY FREE TRIAL
             </div>
             <h1 className="text-4xl font-extrabold text-white mb-6 leading-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
               Start learning. <br/>
               Start earning.
             </h1>
-            <p className="text-lg text-indigo-200 mb-8 max-w-md">
+            <p className="text-lg text-blue-100/80 mb-8 max-w-md leading-relaxed">
               Join thousands of Nigerians mastering high-income digital skills and building a passive income network.
             </p>
 
@@ -62,23 +63,23 @@ export default function Register() {
                 "No credit card required to start"
               ].map((benefit, i) => (
                 <li key={i} className="flex items-start gap-3 text-white">
-                  <CheckCircle2 className="text-[#10B981] flex-shrink-0 mt-0.5" size={20} />
-                  <span className="font-medium">{benefit}</span>
+                  <CheckCircle2 className="flex-shrink-0 mt-0.5" size={20} style={{ color: colors.green }} />
+                  <span className="font-medium text-white/90">{benefit}</span>
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
-        <div className="relative z-10 mt-12 bg-white/10 backdrop-blur-sm border border-white/10 p-6 rounded-2xl">
+        <div className="relative z-10 mt-12 bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-2xl">
           <div className="flex items-center gap-4 mb-3">
             <div className="flex -space-x-2">
-               <img className="w-8 h-8 rounded-full border-2 border-[#1E1B4B]" src="https://i.pravatar.cc/100?img=12" alt="User" />
-               <img className="w-8 h-8 rounded-full border-2 border-[#1E1B4B]" src="https://i.pravatar.cc/100?img=32" alt="User" />
-               <div className="w-8 h-8 rounded-full border-2 border-[#1E1B4B] bg-[#10B981] flex items-center justify-center text-[10px] font-bold text-white">+10k</div>
+               <img className="w-8 h-8 rounded-full border-2 border-[#0F2942]" src="https://i.pravatar.cc/100?img=12" alt="User" />
+               <img className="w-8 h-8 rounded-full border-2 border-[#0F2942]" src="https://i.pravatar.cc/100?img=32" alt="User" />
+               <div className="w-8 h-8 rounded-full border-2 border-[#0F2942] flex items-center justify-center text-[10px] font-bold text-white" style={{ backgroundColor: colors.green }}>+10k</div>
             </div>
           </div>
-          <p className="text-sm text-indigo-100 font-medium">Over 10,000 active members are already earning daily commissions.</p>
+          <p className="text-sm text-blue-100/70 font-medium leading-relaxed">Over 10,000 active members are already earning daily commissions.</p>
         </div>
       </div>
 
@@ -88,7 +89,7 @@ export default function Register() {
         {/* Mobile Logo */}
         <div className="lg:hidden text-center mb-8">
           <Link to="/" className="text-3xl font-extrabold tracking-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            <span style={{ color: colors.primary }}>Sell</span><span style={{ color: colors.accent }}>iberation</span>
+            <span style={{ color: colors.blue }}>Sell</span><span style={{ color: colors.orange }}>iberation</span>
           </Link>
         </div>
 
@@ -115,14 +116,14 @@ export default function Register() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10B981]/20 focus:border-[#10B981] transition-colors sm:text-sm font-medium"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF7A00]/20 focus:border-[#FF7A00] transition-colors sm:text-sm font-medium"
                   placeholder="e.g. John Doe"
                   required
                 />
               </div>
             </div>
 
-            {/* Email & Phone Row (Side by side on desktop, stacked on mobile) */}
+            {/* Email & Phone Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
@@ -134,7 +135,7 @@ export default function Register() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10B981]/20 focus:border-[#10B981] transition-colors sm:text-sm font-medium"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF7A00]/20 focus:border-[#FF7A00] transition-colors sm:text-sm font-medium"
                     placeholder="you@example.com"
                     required
                   />
@@ -151,7 +152,7 @@ export default function Register() {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10B981]/20 focus:border-[#10B981] transition-colors sm:text-sm font-medium"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF7A00]/20 focus:border-[#FF7A00] transition-colors sm:text-sm font-medium"
                     placeholder="0801 234 5678"
                     required
                   />
@@ -170,7 +171,7 @@ export default function Register() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10B981]/20 focus:border-[#10B981] transition-colors sm:text-sm font-medium"
+                  className="block w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF7A00]/20 focus:border-[#FF7A00] transition-colors sm:text-sm font-medium"
                   placeholder="Create a strong password"
                   required
                 />
@@ -191,18 +192,19 @@ export default function Register() {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <LinkIcon size={18} className={referralCode ? "text-[#10B981]" : "text-gray-400"} />
+                  {/* Icon turns green if a code is entered to validate action */}
+                  <LinkIcon size={18} className={referralCode ? "text-[#1CB957]" : "text-gray-400"} />
                 </div>
                 <input
                   type="text"
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10B981]/20 focus:border-[#10B981] transition-colors sm:text-sm font-medium uppercase"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF7A00]/20 focus:border-[#FF7A00] transition-colors sm:text-sm font-medium uppercase"
                   placeholder="Enter code if you have one"
                 />
               </div>
               {referralCode && (
-                 <p className="mt-1.5 text-xs text-[#10B981] font-medium flex items-center gap-1">
+                 <p className="mt-1.5 text-xs font-medium flex items-center gap-1" style={{ color: colors.green }}>
                    <CheckCircle2 size={12} /> Referral code applied
                  </p>
               )}
@@ -211,21 +213,21 @@ export default function Register() {
             <div className="pt-4">
               <button 
                 type="submit" 
-                className="w-full flex justify-center items-center gap-2 py-4 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-[#10B981] hover:bg-[#059669] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#10B981] transition-all"
+                className="w-full flex justify-center items-center gap-2 py-4 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-[#FF7A00] hover:bg-[#CC6200] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF7A00] transition-all hover:-translate-y-0.5"
               >
                 Create Account <ArrowRight size={16} />
               </button>
             </div>
             
             <p className="text-xs text-center text-gray-500 mt-4">
-              By creating an account, you agree to our <a href="#" className="text-[#1E1B4B] font-semibold hover:underline">Terms of Service</a> and <a href="#" className="text-[#1E1B4B] font-semibold hover:underline">Privacy Policy</a>.
+              By creating an account, you agree to our <a href="#" className="font-semibold hover:underline" style={{ color: colors.blue }}>Terms of Service</a> and <a href="#" className="font-semibold hover:underline" style={{ color: colors.blue }}>Privacy Policy</a>.
             </p>
           </form>
 
           <div className="mt-8 pt-6 border-t border-gray-200 text-center">
             <p className="text-sm text-gray-600 font-medium">
               Already have an account?{' '}
-              <Link to="/login" className="font-bold text-[#10B981] hover:text-[#059669] transition-colors">
+              <Link to="/login" className="font-bold hover:opacity-80 transition-opacity" style={{ color: colors.orange }}>
                 Sign in here
               </Link>
             </p>
