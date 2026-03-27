@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ArrowRight, CheckCircle, Play, Award, DollarSign,
+  ArrowRight, Play, Award, DollarSign,
   BookOpen, Menu, X, UserPlus, Zap, TrendingUp,
   Users, ChevronRight, Star, Clock, MessageCircle, 
   Share2, Package, Smartphone
