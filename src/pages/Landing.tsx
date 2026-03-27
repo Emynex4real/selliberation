@@ -2,10 +2,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, Check, Play, Award, DollarSign,
-  BookOpen, MessageCircle, Globe, ChevronRight,
-  Menu, X, Star, ShieldCheck, Users, Smartphone,
-  BarChart3, TrendingUp, Zap, Target, Quote,
-  UserPlus, Clock, Lock
+  BookOpen, ChevronRight,
+  Menu, X,
+  UserPlus, Lock
 } from 'lucide-react';
 
 const COURSES = [
@@ -51,41 +50,7 @@ const COURSES = [
   },
 ];
 
-const TESTIMONIALS = [
-  {
-    name: "Olamide B.",
-    location: "Ibadan, Oyo",
-    role: "Stay-at-home mum",
-    msg: "Omo, Selliberation is legit! Just withdrew my first ₦35k commission this morning. I only started 3 weeks ago. The WhatsApp class really opened my eyes. 🙏🏾",
-    earned: "₦35,000",
-    period: "first 3 weeks",
-    avatar: "O",
-    avatarBg: '#F0F4F8',
-    avatarColor: '#0F2942',
-  },
-  {
-    name: "Grace O.",
-    location: "Port Harcourt",
-    role: "Fresh graduate",
-    msg: "The free modules alone are packed with value. I upgraded to premium 3 days ago and I've already gotten 2 referrals. My Level 2 commissions just started dropping too! 🚀💚",
-    earned: "₦8,000",
-    period: "in 3 days",
-    avatar: "G",
-    avatarBg: '#E8F8EE',
-    avatarColor: '#1CB957',
-  },
-  {
-    name: "Emanuel U.",
-    location: "Enugu State",
-    role: "NYSC Corps Member",
-    msg: "Best 5k I've spent this year. The platform is smooth, courses are practical, and the 6-level earning is no joke. My Level 2 guys are working hard for me. 😂",
-    earned: "₦61,750",
-    period: "in 6 weeks",
-    avatar: "E",
-    avatarBg: '#FFF2E5',
-    avatarColor: '#FF7A00',
-  },
-];
+
 
 const COMMISSION_LEVELS = [
   { level: 1, label: 'Direct Referral', rate: '65%', amount: 3250, barWidth: '100%', color: '#FF7A00' },
@@ -102,7 +67,6 @@ export default function Landing() {
   const [l2, setL2] = useState(5);
 
   const monthly = l1 * 3250 + l1 * l2 * 750;
-  const yearly = monthly * 12;
 
   // LOGO COLORS
   const colors = {
