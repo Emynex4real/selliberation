@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ArrowRight, Check, Play, Award, DollarSign,
+  ArrowRight, Play, Award, DollarSign,
   BookOpen, Menu, X, UserPlus, Zap, Shield, TrendingUp,
-  Users, ChevronRight, Star, Wallet, Target,
+  Users, Star, Wallet, Target,
   MessageCircle, Share2, Package, Smartphone
 } from 'lucide-react';
 
