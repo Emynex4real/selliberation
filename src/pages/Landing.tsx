@@ -1,36 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, Check, Play, Award, DollarSign,
-  BookOpen, ChevronRight, Menu, X, UserPlus, Lock
+  BookOpen, Menu, X, UserPlus
 } from 'lucide-react';
-
-const COURSES = [
-  {
-    title: "Make Your First ₦10k–₦50k Online",
-    desc: "The proven beginner playbook. No hype — just systems that actually work in Nigeria today.",
-    modules: 8, lessons: 24,
-    tag: "Most Popular",
-    tagStyle: { background: '#FFF0E5', color: '#FF7A00' },
-    image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=600&h=400&fit=crop",
-  },
-  {
-    title: "WhatsApp Monetization Mastery",
-    desc: "Turn your WhatsApp status, channels, and broadcast lists into a consistent cash machine.",
-    modules: 6, lessons: 18,
-    tag: "Trending",
-    tagStyle: { background: '#EAF0F6', color: '#0F2942' },
-    image: "https://images.unsplash.com/photo-1611746872915-64382b5c2b36?w=600&h=400&fit=crop",
-  },
-  {
-    title: "Affiliate Marketing from Scratch",
-    desc: "Pick the right niches, set up your funnels, and close commissions every single day.",
-    modules: 5, lessons: 15,
-    tag: "Beginner Friendly",
-    tagStyle: { background: '#FFF0E5', color: '#FF7A00' },
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop",
-  },
-];
 
 const COMMISSION_LEVELS = [
   { level: 1, label: 'Direct Referral', rate: '65%', amount: 3250, barWidth: '100%', color: '#FF7A00' },
