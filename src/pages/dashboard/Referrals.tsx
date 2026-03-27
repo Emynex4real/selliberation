@@ -1,7 +1,65 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Copy, QrCode, Users, TrendingUp, Gift } from 'lucide-react';
-import { mockReferrals } from '../../data/mockData';
+import { Copy, Share2, Users, DollarSign, TrendingUp, ChevronDown, ChevronRight } from 'lucide-react';
+import { mockReferralNetwork, mockCommissions } from '../../data/mockData';
+import type { ReferralNode } from '../../types';
+
+const LEVEL_COLORS = [
+  { bg: '#E8F0F8', text: '#0D2847', border: '#C8D8EC', rate: '65%', amount: '₦3,250' },
+  { bg: '#F0FDF4', text: '#1CB957', border: '#BBF7D0', rate: '15%', amount: '₦750' },
+  { bg: '#FEF3E8', text: '#F5820A', border: '#FED7AA', rate: '5%',  amount: '₦250' },
+  { bg: '#EFF6FF', text: '#3B82F6', border: '#BFDBFE', rate: '3%',  amount: '₦150' },
+  { bg: '#F5F3FF', text: '#8B5CF6', border: '#DDD6FE', rate: '2%',  amount: '₦100' },
+  { bg: '#FDF2F8', text: '#EC4899', border: '#FBCFE8', rate: '1%',  amount: '₦50'  },
+];
+
+function timeAgo(iso: string) {
+  const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Yesterday';
+  return `${days} days ago`;
+}
+
+function ReferralCard({ node, depth = 0 }: { node: ReferralNode; depth?: number }) {
+  const [expanded, setExpanded] = useState(depth < 1);
+  const hasChildren = node.children && node.children.length > 0;
+  const meta = LEVEL_COLORS[node.level - 1] ?? LEVEL_COLORS[0];
+
+  return (
+    <div className="relative">
+      <div
+        className="flex items-center gap-3 p-3.5 rounded-xl transition-all"
+        style={{ background: expanded && hasChildren ? meta.bg : 'white', border: `1px solid ${meta.border}`, marginLeft: `${depth * 24}px` }}
+      >
+        <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+          style={{ background: meta.bg, color: meta.text, border: `2px solid ${meta.border}` }}>
+          {node.referredName.charAt(0)}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-gray-900 truncate">{node.referredName}</p>
+          <p className="text-xs text-gray-400">{timeAgo(node.createdAt)}</p>
+        </div>
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0"
+          style={{ background: node.subscriptionStatus === 'premium' ? '#F0FDF4' : '#FEF3E8', color: node.subscriptionStatus === 'premium' ? '#1CB957' : '#F5820A' }}>
+          {node.subscriptionStatus === 'premium' ? 'Premium' : 'Trial'}
+        </span>
+        <span className="text-xs font-bold shrink-0" style={{ color: meta.text }}>L{node.level}</span>
+        {hasChildren && (
+          <button onClick={() => setExpanded(v => !v)} className="ml-1 p-1 rounded-lg hover:bg-black/5" style={{ color: '#6B7280' }}>
+            {expanded ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
+          </button>
+        )}
+      </div>
+      {expanded && hasChildren && (
+        <div className="mt-2 space-y-2">
+          {node.children!.map(child => (
+            <ReferralCard key={child.id} node={child} depth={depth + 1} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Referrals() {
   const { user } = useAuth();
@@ -9,137 +67,142 @@ export default function Referrals() {
 
   const referralLink = `https://selliberation.com/register?ref=${user?.referralCode}`;
 
-  const copyToClipboard = () => {
+  const copyLink = () => {
     navigator.clipboard.writeText(referralLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const level1Referrals = mockReferrals.filter(r => r.level === 1);
-  const totalReferrals = mockReferrals.length;
+  const shareWhatsApp = () => {
+    const text = encodeURIComponent(
+      `Join me on Selliberation — learn digital skills and earn real money! My referral link: ${referralLink}`
+    );
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  };
+
+  // Stats
+  const level1 = mockReferralNetwork;
+  const level2 = mockReferralNetwork.flatMap(r => r.children ?? []);
+  const level3 = level2.flatMap(r => r.children ?? []);
+  const totalNetwork = level1.length + level2.length + level3.length;
+  const premiumCount = [...level1, ...level2, ...level3].filter(r => r.subscriptionStatus === 'premium').length;
+  const totalCommissions = mockCommissions.reduce((s, c) => s + c.amount, 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
+
+      {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Referral Hub</h1>
-        <p className="text-gray-500">Share your link and earn commissions</p>
+        <h1 className="text-2xl font-extrabold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Referral Hub</h1>
+        <p className="text-gray-500 text-sm mt-0.5">Grow your network, earn commissions across 6 levels</p>
       </div>
 
-      <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl p-6 text-white">
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          <div className="flex-1">
-            <h2 className="text-xl font-bold mb-2">Your Referral Link</h2>
-            <p className="text-amber-100 mb-4">Share this link with friends and earn up to 65% commission!</p>
-            <div className="flex gap-2">
+      {/* Share card */}
+      <div className="rounded-2xl p-6" style={{ background: 'linear-gradient(135deg, #0D2847 0%, #112e52 100%)' }}>
+        <div className="grid md:grid-cols-2 gap-6 items-center">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>Your referral link</p>
+            <h2 className="text-xl font-extrabold text-white mb-1" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Earn up to <span style={{ color: '#F5820A' }}>65%</span> per subscriber
+            </h2>
+            <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.55)' }}>
+              Share your link — anyone who subscribes earns you ₦3,250 instantly. Their subscribers earn you ₦750. 6 levels deep.
+            </p>
+            <div className="flex gap-2 mb-3">
               <input
                 type="text"
                 value={referralLink}
                 readOnly
-                className="flex-1 bg-white/20 border border-white/30 rounded-lg px-4 py-2 text-white placeholder-white/70"
+                className="flex-1 rounded-xl px-3 py-2.5 text-xs text-white min-w-0"
+                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}
               />
               <button
-                onClick={copyToClipboard}
-                className="bg-white text-amber-600 px-4 py-2 rounded-lg flex items-center gap-2 font-medium hover:bg-gray-100"
+                onClick={copyLink}
+                className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold shrink-0 transition-all"
+                style={{ background: copied ? '#1CB957' : 'rgba(255,255,255,0.15)', color: 'white' }}
               >
-                <Copy size={16} />
-                {copied ? 'Copied!' : 'Copy'}
+                <Copy size={13} /> {copied ? 'Copied!' : 'Copy'}
               </button>
             </div>
+            <button
+              onClick={shareWhatsApp}
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
+              style={{ background: '#25D366' }}
+            >
+              <Share2 size={15} /> Share on WhatsApp
+            </button>
           </div>
-          <div className="w-32 h-32 bg-white rounded-xl flex items-center justify-center">
-            <QrCode className="text-amber-600" size={80} />
+
+          {/* Code QR placeholder */}
+          <div className="hidden md:flex flex-col items-center justify-center gap-3">
+            <div className="w-28 h-28 rounded-2xl flex items-center justify-center text-4xl font-black"
+              style={{ background: 'rgba(255,255,255,0.08)', border: '2px dashed rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.3)' }}>
+              QR
+            </div>
+            <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.4)' }}>
+              Referral code:<br />
+              <span className="font-mono font-bold" style={{ color: '#F5820A' }}>{user?.referralCode}</span>
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="text-blue-600" size={20} />
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: 'Total Network', value: totalNetwork, icon: Users, color: '#0D2847', bg: '#E8F0F8' },
+          { label: 'Premium Members', value: premiumCount, icon: TrendingUp, color: '#1CB957', bg: '#F0FDF4' },
+          { label: 'Direct (L1)', value: level1.length, icon: ChevronRight, color: '#F5820A', bg: '#FEF3E8' },
+          { label: 'Total Earned', value: `₦${totalCommissions.toLocaleString()}`, icon: DollarSign, color: '#0D2847', bg: '#E8F0F8' },
+        ].map((s) => (
+          <div key={s.label} className="bg-white rounded-2xl p-5 shadow-sm" style={{ border: '1px solid rgba(0,0,0,0.05)' }}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-semibold text-gray-500">{s.label}</span>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: s.bg }}>
+                <s.icon size={15} style={{ color: s.color }} />
+              </div>
             </div>
-            <span className="text-gray-500">Total Referrals</span>
+            <p className="text-2xl font-extrabold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{s.value}</p>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{totalReferrals}</p>
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="text-green-600" size={20} />
-            </div>
-            <span className="text-gray-500">Level 1</span>
-          </div>
-          <p className="text-3xl font-bold text-gray-900">{level1Referrals.length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Gift className="text-purple-600" size={20} />
-            </div>
-            <span className="text-gray-500">Your Stage</span>
-          </div>
-          <p className="text-3xl font-bold text-gray-900">Stage {user?.stage}</p>
-        </div>
+        ))}
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 border-b border-gray-100">
-          <h2 className="text-lg font-bold">Your Referrals</h2>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-5 py-3 text-left text-sm font-semibold text-gray-600">Referred User</th>
-                <th className="px-5 py-3 text-left text-sm font-semibold text-gray-600">Level</th>
-                <th className="px-5 py-3 text-left text-sm font-semibold text-gray-600">Date</th>
-                <th className="px-5 py-3 text-left text-sm font-semibold text-gray-600">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {level1Referrals.map((ref) => (
-                <tr key={ref.id} className="hover:bg-gray-50">
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 font-bold">
-                        U
-                      </div>
-                      <span className="font-medium">User {ref.referredUserId}</span>
-                    </div>
-                  </td>
-                  <td className="px-5 py-4">
-                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-sm">Level {ref.level}</span>
-                  </td>
-                  <td className="px-5 py-4 text-gray-500">{new Date(ref.createdAt).toLocaleDateString()}</td>
-                  <td className="px-5 py-4">
-                    <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm">Active</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-        <h2 className="text-lg font-bold mb-4">Commission Structure</h2>
-        <div className="grid md:grid-cols-6 gap-4">
-          {[
-            { level: 1, rate: '65%', amount: '₦3,250' },
-            { level: 2, rate: '15%', amount: '₦750' },
-            { level: 3, rate: '5%', amount: '₦250' },
-            { level: 4, rate: '3%', amount: '₦150' },
-            { level: 5, rate: '2%', amount: '₦100' },
-            { level: 6, rate: '1%', amount: '₦50' },
-          ].map((item) => (
-            <div key={item.level} className={`p-4 rounded-lg text-center ${item.level === 1 ? 'bg-amber-50 border border-amber-200' : 'bg-gray-50'}`}>
-              <div className="text-2xl font-bold text-amber-600">{item.rate}</div>
-              <div className="text-sm text-gray-500">Level {item.level}</div>
-              <div className="text-xs text-gray-400 mt-1">{item.amount}</div>
+      {/* Commission structure */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm" style={{ border: '1px solid rgba(0,0,0,0.05)' }}>
+        <h2 className="font-bold text-gray-900 mb-4">Commission Structure</h2>
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+          {LEVEL_COLORS.map((meta, i) => (
+            <div key={i} className="text-center p-3 rounded-xl" style={{ background: meta.bg, border: `1px solid ${meta.border}` }}>
+              <p className="text-xs font-semibold text-gray-500 mb-1">Level {i + 1}</p>
+              <p className="text-xl font-extrabold" style={{ color: meta.text, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{meta.rate}</p>
+              <p className="text-[11px] font-medium text-gray-400 mt-0.5">{meta.amount}<br />per sub</p>
             </div>
           ))}
         </div>
+        <p className="text-xs text-gray-400 mt-3">Based on ₦5,000/month Premium subscription price.</p>
       </div>
+
+      {/* Network tree */}
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{ border: '1px solid rgba(0,0,0,0.05)' }}>
+        <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid #F3F4F6' }}>
+          <h2 className="font-bold text-gray-900">Your Network Tree</h2>
+          <span className="text-xs text-gray-400">{totalNetwork} people in your network</span>
+        </div>
+        <div className="p-5 space-y-3">
+          {mockReferralNetwork.length === 0 ? (
+            <div className="text-center py-10">
+              <Users size={36} className="mx-auto mb-3 text-gray-300" />
+              <p className="text-gray-500 font-medium">No referrals yet</p>
+              <p className="text-sm text-gray-400 mt-1">Share your link to start building your network</p>
+            </div>
+          ) : (
+            mockReferralNetwork.map(node => (
+              <ReferralCard key={node.id} node={node} depth={0} />
+            ))
+          )}
+        </div>
+      </div>
+
     </div>
   );
 }

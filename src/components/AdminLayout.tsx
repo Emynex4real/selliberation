@@ -1,62 +1,120 @@
-import { Link, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Users, BookOpen, DollarSign, Wallet, Settings, LogOut, Menu, X, BarChart3 } from 'lucide-react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import {
+  LayoutDashboard, Users, BookOpen, DollarSign, Wallet,
+  Settings, LogOut, Menu, X, ChevronRight, BarChart3,
+} from 'lucide-react';
 import { useState } from 'react';
 
+const NAV_ITEMS = [
+  { to: '/admin', icon: LayoutDashboard, label: 'Overview', end: true },
+  { to: '/admin/users', icon: Users, label: 'Users', end: false },
+  { to: '/admin/courses', icon: BookOpen, label: 'Courses', end: false },
+  { to: '/admin/commissions', icon: DollarSign, label: 'Commissions', end: false },
+  { to: '/admin/withdrawals', icon: Wallet, label: 'Withdrawals', end: false },
+  { to: '/admin/settings', icon: Settings, label: 'Settings', end: false },
+];
+
 export default function AdminLayout() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const navItems = [
-    { to: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/admin/users', icon: Users, label: 'Users' },
-    { to: '/admin/courses', icon: BookOpen, label: 'Courses' },
-    { to: '/admin/commissions', icon: DollarSign, label: 'Commissions' },
-    { to: '/admin/withdrawals', icon: Wallet, label: 'Withdrawals' },
-    { to: '/admin/settings', icon: Settings, label: 'Settings' },
-  ];
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-4">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2">
-              {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-            <Link to="/admin" className="text-xl font-bold text-amber-600 flex items-center gap-2">
-              <BarChart3 /> Selliberation Admin
-            </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/dashboard" className="text-sm text-gray-600 hover:text-amber-600">View Site</Link>
-            <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold">
-              A
+    <div className="min-h-screen" style={{ backgroundColor: '#F0F2F5' }}>
+
+      {sidebarOpen && (
+        <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
+
+      {/* SIDEBAR */}
+      <aside
+        className={`fixed top-0 left-0 h-full w-64 z-40 flex flex-col transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+        style={{ background: 'linear-gradient(180deg, #08192E 0%, #050F1C 100%)' }}
+      >
+        <div className="px-5 py-5 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(245,130,10,0.2)' }}>
+              <BarChart3 size={16} style={{ color: '#F5820A' }} />
             </div>
+            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }} className="text-sm font-extrabold">
+              <span className="text-white">Sell</span>
+              <span style={{ color: '#F5820A' }}>iberation</span>
+              <span className="ml-1.5 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(245,130,10,0.2)', color: '#F5820A' }}>ADMIN</span>
+            </div>
+          </div>
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-white/40 hover:text-white">
+            <X size={18} />
+          </button>
+        </div>
+
+        <nav className="flex-1 px-3 py-4 space-y-0.5">
+          {NAV_ITEMS.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              onClick={() => setSidebarOpen(false)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
+              style={({ isActive }) => isActive
+                ? { background: 'rgba(245,130,10,0.15)', color: '#F5820A', borderLeft: '3px solid #F5820A' }
+                : { color: 'rgba(255,255,255,0.6)' }
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <item.icon size={18} style={isActive ? { color: '#F5820A' } : {}} />
+                  <span className="flex-1">{item.label}</span>
+                  {isActive && <ChevronRight size={14} style={{ color: '#F5820A' }} />}
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="px-3 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+          <NavLink
+            to="/dashboard"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium mb-1 transition-colors hover:bg-white/6"
+            style={{ color: 'rgba(255,255,255,0.5)' }}
+          >
+            <BarChart3 size={17} /> View Member Dashboard
+          </NavLink>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium w-full transition-colors hover:bg-red-500/10"
+            style={{ color: 'rgba(255,120,120,0.8)' }}
+          >
+            <LogOut size={17} /> Sign Out
+          </button>
+        </div>
+      </aside>
+
+      {/* HEADER */}
+      <header
+        className="fixed top-0 left-0 right-0 lg:left-64 z-20 bg-white/95 backdrop-blur-sm"
+        style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', height: '60px' }}
+      >
+        <div className="flex items-center justify-between px-4 md:px-6 h-full">
+          <div className="flex items-center gap-3">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+              <Menu size={20} />
+            </button>
+            <span className="text-sm font-semibold text-gray-500">Admin Panel</span>
+          </div>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white" style={{ background: '#0D2847' }}>
+            A
           </div>
         </div>
       </header>
 
-      <aside className={`fixed top-14 left-0 h-full w-64 bg-white shadow-lg z-40 transform transition-transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
-        <nav className="p-4 space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              onClick={() => setSidebarOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-            >
-              <item.icon size={20} />
-              {item.label}
-            </Link>
-          ))}
-          <Link to="/" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 mt-4 border-t">
-            <LogOut size={20} />
-            Logout
-          </Link>
-        </nav>
-      </aside>
-
-      <main className="lg:ml-64 pt-14 min-h-screen">
-        <div className="p-6">
+      <main className="lg:ml-64 pt-15 min-h-screen">
+        <div className="p-4 md:p-6 max-w-7xl mx-auto">
           <Outlet />
         </div>
       </main>

@@ -7,8 +7,14 @@ export interface User {
   referralCode: string;
   referredBy?: string;
   stage: number;
+  subscriptionStatus: 'trial' | 'premium' | 'expired';
   createdAt: string;
   trialEndsAt: string;
+  bankDetails?: {
+    bankName: string;
+    accountNumber: string;
+    accountName: string;
+  };
 }
 
 export interface Course {
@@ -59,6 +65,7 @@ export interface Subscription {
 export interface Commission {
   id: string;
   payerId: string;
+  payerName: string;
   beneficiaryId: string;
   courseId: string;
   level: number;
@@ -79,10 +86,14 @@ export interface Withdrawal {
   createdAt: string;
 }
 
-export interface Referral {
+export interface ReferralNode {
   id: string;
   userId: string;
+  name: string;
   referredUserId: string;
+  referredName: string;
   level: number;
+  subscriptionStatus: 'trial' | 'premium' | 'expired';
   createdAt: string;
+  children?: ReferralNode[];
 }
