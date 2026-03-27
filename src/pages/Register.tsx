@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff, User, Mail, Phone, Lock, Link as LinkIcon, CheckCircle2, ArrowRight, ArrowLeft } from 'lucide-react';
 
 export default function Register() {
@@ -17,7 +18,7 @@ export default function Register() {
   // Multi-step State
   const [step, setStep] = useState(1);
 
-  // const { register } = useAuth(); // Assuming Context
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   // Core Brand Colors
@@ -42,7 +43,7 @@ export default function Register() {
     e.preventDefault();
     if (step !== 3) return;
     
-    // await register(name, email, phone, password, referralCode || undefined);
+    await register(name, email, phone, password, referralCode || undefined);
     navigate('/dashboard');
   };
 
