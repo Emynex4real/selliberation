@@ -501,7 +501,7 @@ export default function Landing() {
                 {['About Us', 'Support', 'Terms & Privacy'].map((item) => (
                   <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
                 ))}
-              </ul>
+              </ul> 
             </div>
           </div>
 
