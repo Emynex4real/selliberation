@@ -2,7 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, Users, BookOpen, DollarSign, Wallet,
-  Settings, LogOut, Menu, X, ChevronRight, BarChart3,
+  Settings, LogOut, Menu, X, ChevronRight, BarChart3, TrendingUp, Megaphone,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -12,6 +12,8 @@ const NAV_ITEMS = [
   { to: '/admin/courses', icon: BookOpen, label: 'Courses', end: false },
   { to: '/admin/commissions', icon: DollarSign, label: 'Commissions', end: false },
   { to: '/admin/withdrawals', icon: Wallet, label: 'Withdrawals', end: false },
+  { to: '/admin/analytics', icon: TrendingUp, label: 'Analytics', end: false },
+  { to: '/admin/announcements', icon: Megaphone, label: 'Announcements', end: false },
   { to: '/admin/settings', icon: Settings, label: 'Settings', end: false },
 ];
 

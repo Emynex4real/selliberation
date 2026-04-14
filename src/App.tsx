@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -18,6 +19,8 @@ import AdminCourses from './pages/admin/AdminCourses';
 import AdminCommissions from './pages/admin/AdminCommissions';
 import AdminWithdrawals from './pages/admin/AdminWithdrawals';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
+import AdminAnnouncements from './pages/admin/AdminAnnouncements';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -48,6 +51,8 @@ function AppRoutes() {
         <Route path="courses" element={<AdminCourses />} />
         <Route path="commissions" element={<AdminCommissions />} />
         <Route path="withdrawals" element={<AdminWithdrawals />} />
+        <Route path="analytics" element={<AdminAnalytics />} />
+        <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="settings" element={<AdminSettings />} />
       </Route>
       
@@ -72,7 +77,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppRoutes />
+        <ToastProvider>
+          <AppRoutes />
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   );
